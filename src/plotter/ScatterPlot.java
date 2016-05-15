@@ -34,14 +34,19 @@ public class ScatterPlot extends JFrame{
         float[][] myData = new float[100][2];
         
         for(int i = 0; i < 100; i++){
-            myData[i][0] = i;
+            myData[i][0] = 3*i;
             myData[i][1] = i;
         }
         
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.add(new AxesPanel()); // add out x and y axis with lables
-        panel.add(new DataPanel(2, Color.RED,"CIRCLE", myData));
+        JLayeredPane panel = new JLayeredPane();
+        JPanel axes = new AxesPanel();
+        axes.setBounds(0,0,F_WIDTH, F_HEIGHT);
+        panel.add(axes, new Integer(1)); // add out x and y axis with lables
+        
+        JPanel dataPoints = new DataPanel(4, Color.RED,"CIRCLE", myData);
+        dataPoints.setBounds(0,0,F_WIDTH, F_HEIGHT);
+        panel.add(dataPoints, new Integer(0));
+        
         add(panel);
         setVisible(true);
     }
@@ -59,6 +64,7 @@ public class ScatterPlot extends JFrame{
              this.pointColor = pointColor;
              this.data = new Data(data);
              setPreferredSize(new Dimension(F_WIDTH, F_HEIGHT));
+             setOpaque(false);
         }
         
         @Override
@@ -67,10 +73,10 @@ public class ScatterPlot extends JFrame{
             g.setColor(this.pointColor);
             switch (pointShape) {
                 case "CIRCLE":
-                    for (Coordinates point : data.getData()) g.fillOval(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
+                    for (Coordinates point : data.getData()) g.fillOval(point.getxMap(), point.getyMap()-pointSize/2, pointSize, pointSize);
                     break;
                 case "SQUARE":
-                    for (Coordinates point : data.getData()) g.fillRect(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
+                    for (Coordinates point : data.getData()) g.fillRect(point.getxMap(), point.getyMap()-pointSize/2, pointSize, pointSize);
                     break;
             }
         }        
@@ -89,6 +95,7 @@ public class ScatterPlot extends JFrame{
         AxesPanel(){
             getAxes();
             setPreferredSize(new Dimension(F_WIDTH, F_HEIGHT));
+            setOpaque(false);
         }
         
         public void getAxes(){ // create the axes
