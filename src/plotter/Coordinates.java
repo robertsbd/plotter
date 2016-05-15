@@ -6,8 +6,8 @@ package plotter;
  */
 public class Coordinates {
     
-    private float x;
-    private float y;
+    private double x;
+    private double y;
     
     private int xMap;
     private int yMap;
@@ -38,27 +38,27 @@ public class Coordinates {
         this.yMap = mapY(this.y);
     }
     
-    Coordinates(float x, float y){
+    Coordinates(double x, double y){
         this.x = x;
         this.y = y;
         this.xMap = mapX(this.x);
         this.yMap = mapY(this.y);
     }
 
-    private static int mapX(float x){ // maps from a standard cartesian space to javas graphic space taking into account any padding for margins
-        float t = ((float) x - xMin) / ( xMax - xMin)*( frameWidth-2*padding)+padding;
+    private static int mapX(double x){ // maps from a standard cartesian space to javas graphic space taking into account any padding for margins
+        double t = ((double) x - xMin) / ( xMax - xMin)*( frameWidth-2*padding)+padding;
         return (int) t;       
     }
  
-    private static int mapY(float y){ 
-        float t = -1*( (( (float) y - yMin)/(yMax-yMin))*(frameHeight-2*padding)+padding    )+frameHeight;
+    private static int mapY(double y){ 
+        double t = -1*( (( (double) y - yMin)/(yMax-yMin))*(frameHeight-2*padding)+padding    )+frameHeight;
         return (int) t;
     }
     
     /**
      * @return the x
      */
-    public float getX() {
+    public double getX() {
         return x;
     }
 
@@ -72,7 +72,7 @@ public class Coordinates {
     /**
      * @return the y
      */
-    public float getY() {
+    public double getY() {
         return y;
     }
 
