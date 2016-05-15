@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -15,90 +14,103 @@ import javax.swing.JPanel;
 
 public class ScatterPlot extends JFrame{
 
-    static final int FRAME_WIDTH = 800;
-    static final int FRAME_HEIGHT = 800;
-    static final int PLOT_WIDTH = 700;
-    static final int PLOT_HEIGHT = 700;
+    static final int F_WIDTH = 1000;
+    static final int F_HEIGHT = 1000;
+    static final int INT_PAD = 40; // internal padding of the frame - the padded area is used for printing titles, labels and so forth
+    
+    private int chartXmin = 0;
+    private int chartXmax = 500;
+    private int chartYmin = 0;
+    private int chartYmax = 500;
     
     ScatterPlot(String title){
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        setSize(F_WIDTH+INT_PAD, F_HEIGHT+INT_PAD);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         setTitle(title);
         
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        DrawScatterPlot scatterPlotDrawing = new DrawScatterPlot();
-        panel.add(scatterPlotDrawing);
+        panel.add(new Axes()); // add out x and y axis with lables
         add(panel);
         setVisible(true);
     }
     
-    public class DrawScatterPlot extends JPanel{
+    private class Data extends JPanel{ // this will draw the data points
+        
+        Coordinates data[];
+        int pointSize;
+        Color pointColor;
+        String pointShape;
+        
+        Data(int pointSize, Color pointColor, String pointShape, Float data[][]){
+            
+             for(int i = 0; i < data.length; i++){
+                 this.data[i] = new Coordinates(data[i][0], data[i][1]);
+             }                        
+             
+             this.pointSize = pointSize;
+             this.pointShape = pointShape;
+             this.pointColor = pointColor;
+        }
+        
+        @Override
+        public void paintComponent(Graphics g){
+            super.paintComponent(g);
+            g.setColor(this.pointColor);
+            switch (pointShape) {
+                case "CIRCLE":
+                    for (Coordinates point : data) g.fillOval(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
+                    break;
+                case "SQUARE":
+                    for (Coordinates point : data) g.fillRect(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
+                    break;
+            }
+        }        
+       
+        
+    }
+    
+    private class Axes extends JPanel{ // this will draw the axes providing the basic layout
 
         private StraightLine xAxis;
         private StraightLine yAxis;
-        private int numberLabels = 11;
+        private int numXLabels = 11;
+        private int numYLabels = 11;
+
         
-        DrawScatterPlot(){
-            JPanel plotPanel = new JPanel();
-            setPreferredSize(new Dimension (PLOT_WIDTH+50,PLOT_HEIGHT+50)); // this bodgy addition is so that we have some extra space around the chart on the right hand side and bottom
-            // need to just define the plot area, it will be 20 less than the size of the frame
-            getAxes();            
-            
+        Axes(){
+            new Coordinates(chartXmin, chartXmax, chartYmin, chartYmax, F_WIDTH, F_HEIGHT, INT_PAD); // define the dimensions of the plotting space
+            getAxes();
+            setPreferredSize(new Dimension(F_WIDTH, F_HEIGHT));
         }
         
         public void getAxes(){ // create the axes
-            xAxis = new StraightLine(new Coordinates(-1*(PLOT_HEIGHT/2),0), new Coordinates(PLOT_HEIGHT/2, 0));
-            yAxis = new StraightLine(new Coordinates(0,-1*(PLOT_WIDTH/2)), new Coordinates(0, PLOT_WIDTH/2));             
+            xAxis = new StraightLine(new Coordinates(chartXmin,chartYmin), new Coordinates(chartXmax, chartYmin)); // change these in time so axes cross at 0.
+            yAxis = new StraightLine(new Coordinates(chartXmin,chartYmin), new Coordinates(chartXmin, chartYmax));             
         }
         
+        @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
             paintAxes(g);
-            paintXLables(g, numberLabels);
-            paintYLables(g, numberLabels);
-            paintPoints(g);
-        }
-        
-        public void paintXLables(Graphics g, int numLabels){
-            for(int i = 0; i < numLabels; i++){
-                int labelValToPlot = (int) (((float) i/(numLabels-1))*PLOT_WIDTH - PLOT_WIDTH/2);
-                Coordinates labelCoordinates = new Coordinates(labelValToPlot,-20);
-                g.drawString(Integer.toString(labelValToPlot),labelCoordinates.mapX(PLOT_WIDTH), labelCoordinates.mapY(PLOT_HEIGHT));
-            }
-        }
-        
-         public void paintYLables(Graphics g, int numLabels){
-            for(int i = 0; i < numLabels; i++){
-                int labelValToPlot = (int) (((float) i/(numLabels-1))*PLOT_WIDTH - PLOT_WIDTH/2);
-                Coordinates labelCoordinates = new Coordinates(5, labelValToPlot-10);
-                g.drawString(Integer.toString(labelValToPlot),labelCoordinates.mapX(PLOT_WIDTH), labelCoordinates.mapY(PLOT_HEIGHT));
-            }
         }
         
         public void paintAxes(Graphics g){   
-            drawStraightLine(g, xAxis);
-            drawStraightLine(g, yAxis);
-        }
-        
-        public void paintPoints(Graphics g){
-            Coordinates data[] = new Coordinates[10]; 
+            g.drawLine(xAxis.getStart().getxMap(), xAxis.getStart().getyMap(), xAxis.getEnd().getxMap(), xAxis.getEnd().getyMap());
+            g.drawLine(yAxis.getStart().getxMap(), yAxis.getStart().getyMap(), yAxis.getEnd().getxMap(), yAxis.getEnd().getyMap());
             
-            for(int i =0; i < 10; i++){
-                data[i] = new Coordinates(i*10, i*10);
+            // paint the x-axis labels
+            for(int i = 0; i < numXLabels; i++){
+                Coordinates labelCoordinates = new Coordinates((int) (((float) i/(numXLabels-1))*(chartXmax-chartXmin)),0);
+                g.drawString(Integer.toString((int) labelCoordinates.getX()),labelCoordinates.getxMap(), labelCoordinates.getyMap()+(INT_PAD/2)); // we minus 30 to get it away from the axis
             }
             
-            g.setColor(Color.RED);
+            // paint the y-axis labels
+            for(int i = 0; i < numYLabels; i++){
+                Coordinates labelCoordinates = new Coordinates(0, (int) (((float) i/(numYLabels-1))*(chartYmax-chartYmin)));
+                g.drawString(Integer.toString((int) labelCoordinates.getY()),labelCoordinates.getxMap()-(INT_PAD), labelCoordinates.getyMap()); // we add 30 to get it away from the axis
+            }            
             
-            for(int i = 0; i < 10; i++){
-                g.fillOval(data[i].mapX(PLOT_WIDTH)-4, data[i].mapY(PLOT_HEIGHT)-4, 8, 8);
-            }
-            
-        }
-
-        public void drawStraightLine(Graphics g, StraightLine line){
-
-            g.drawLine(line.getStart().mapX(PLOT_WIDTH), line.getStart().mapY(PLOT_HEIGHT), line.getEnd().mapX(PLOT_WIDTH), line.getEnd().mapY(PLOT_HEIGHT));
         }
     }
 }
