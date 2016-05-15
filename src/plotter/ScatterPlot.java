@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 /**
@@ -28,29 +29,36 @@ public class ScatterPlot extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         setTitle(title);
         
+        new Coordinates(chartXmin, chartXmax, chartYmin, chartYmax, F_WIDTH, F_HEIGHT, INT_PAD); // define the dimensions of the plotting space
+
+        float[][] myData = new float[100][2];
+        
+        for(int i = 0; i < 100; i++){
+            myData[i][0] = i;
+            myData[i][1] = i;
+        }
+        
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.add(new Axes()); // add out x and y axis with lables
+        panel.add(new AxesPanel()); // add out x and y axis with lables
+        panel.add(new DataPanel(2, Color.RED,"CIRCLE", myData));
         add(panel);
         setVisible(true);
     }
     
-    private class Data extends JPanel{ // this will draw the data points
+    private class DataPanel extends JPanel{ // this will draw the data points
         
-        Coordinates data[];
+        Data data;
         int pointSize;
         Color pointColor;
         String pointShape;
         
-        Data(int pointSize, Color pointColor, String pointShape, Float data[][]){
-            
-             for(int i = 0; i < data.length; i++){
-                 this.data[i] = new Coordinates(data[i][0], data[i][1]);
-             }                        
-             
+        DataPanel(int pointSize, Color pointColor, String pointShape, float data[][]){   
              this.pointSize = pointSize;
              this.pointShape = pointShape;
              this.pointColor = pointColor;
+             this.data = new Data(data);
+             setPreferredSize(new Dimension(F_WIDTH, F_HEIGHT));
         }
         
         @Override
@@ -59,10 +67,10 @@ public class ScatterPlot extends JFrame{
             g.setColor(this.pointColor);
             switch (pointShape) {
                 case "CIRCLE":
-                    for (Coordinates point : data) g.fillOval(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
+                    for (Coordinates point : data.getData()) g.fillOval(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
                     break;
                 case "SQUARE":
-                    for (Coordinates point : data) g.fillRect(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
+                    for (Coordinates point : data.getData()) g.fillRect(point.getxMap()-pointSize/2, point.getyMap()+pointSize/2, pointSize, pointSize);
                     break;
             }
         }        
@@ -70,7 +78,7 @@ public class ScatterPlot extends JFrame{
         
     }
     
-    private class Axes extends JPanel{ // this will draw the axes providing the basic layout
+    private class AxesPanel extends JPanel{ // this will draw the axes providing the basic layout
 
         private StraightLine xAxis;
         private StraightLine yAxis;
@@ -78,8 +86,7 @@ public class ScatterPlot extends JFrame{
         private int numYLabels = 11;
 
         
-        Axes(){
-            new Coordinates(chartXmin, chartXmax, chartYmin, chartYmax, F_WIDTH, F_HEIGHT, INT_PAD); // define the dimensions of the plotting space
+        AxesPanel(){
             getAxes();
             setPreferredSize(new Dimension(F_WIDTH, F_HEIGHT));
         }
