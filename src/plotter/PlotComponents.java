@@ -1,7 +1,13 @@
 package plotter;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import javax.swing.JPanel;
 
 /**
@@ -9,44 +15,64 @@ import javax.swing.JPanel;
  * @author benjamin
  */
 public class PlotComponents {
-        
-    public static class Title extends JPanel{
+     
+    public static class Title extends JPanel{ // draws a title, can be used for writing axis titles also. Will also write 
         private String title;
-        private int fontSize;
+        private Font font;
+        private String location; // which location (top, left, right, bottom)
+        private int distanceFromFrame; // a negative int that will define how far from the plotting area the title should be located.
+        private float proportionUpSide;
         
         Title(){
+            this.title = "";
+            this.location = "TOP";
+            this.distanceFromFrame = 0;
+            this.font = null;            
         }
         
-        Title(String title){
+        Title(String title, String location, int distanceFromFrame, float proprotionUpSide, Font font){
             this.title = title;
-            
-        }    
-    }
-    
-    public static class xAxisTitle extends JPanel{
-        private String title;
-        private int fontSize;
+            this.location = location;
+            this.distanceFromFrame = distanceFromFrame;
+            this.font = font;
+        }  
         
-        xAxisTitle(){
+        public void paintComponent(Graphics g){
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D)g.create();
+            Coordinates titleCoord = new Coordinates();
+  
+            g2d.setFont(font);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            switch (location){
+                case "TOP":
+                    titleCoord = new Coordinates((titleCoord.getxMax()-titleCoord.getxMin())*proportionUpSide, titleCoord.getyMax());
+                    g2d.drawString(title, titleCoord.getxMap(), titleCoord.getyMap()+distanceFromFrame);
+                    break;
+                case "BOTTOM":
+                    titleCoord = new Coordinates((titleCoord.getxMax()-titleCoord.getxMin())*proportionUpSide, titleCoord.getyMin());
+                    g2d.drawString(title, titleCoord.getxMap(), titleCoord.getyMap()-distanceFromFrame);
+                    break;
+                case "LEFT":
+                    titleCoord = new Coordinates(titleCoord.getxMin(),(titleCoord.getyMax()-titleCoord.getyMin())*proportionUpSide);
+                    g2d.drawString(title, titleCoord.getxMap()+distanceFromFrame, titleCoord.getyMap());
+                    break;
+                case "RIGHT":
+                    titleCoord = new Coordinates(titleCoord.getxMin(),(titleCoord.getyMax()-titleCoord.getyMax())*proportionUpSide);
+                    g2d.drawString(title, titleCoord.getxMap()-distanceFromFrame, titleCoord.getyMap());
+                    break;
+            }
         }
         
-        xAxisTitle(String title){
+        public void setTitle(String title, String location, int distanceFromFrame, float proportionUpSide, Font font){
             this.title = title;
-            
-        }    
-    }
-
-    public static class yAxisTitle extends JPanel{
-        private String title;
-        private int fontSize;
+            this.location = location;
+            this.distanceFromFrame = distanceFromFrame;
+            this.font = font;
+            this.proportionUpSide = proportionUpSide;
+        }  
         
-        yAxisTitle(){
-        }
-        
-        yAxisTitle(String title){
-            this.title = title;
-            
-        }    
     }
     
     public static class Axes extends JPanel{ // this will draw the axes providing the basic layout
@@ -59,6 +85,7 @@ public class PlotComponents {
         private int xMax;
         private int yMin;
         private int yMax;
+        private Font font;
 
         Axes(){
         }
@@ -73,59 +100,37 @@ public class PlotComponents {
         @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D)g.create();
 
             StraightLine xAxis = new StraightLine(new Coordinates(xMin,yMin), new Coordinates(xMax, yMin));
             StraightLine yAxis = new StraightLine(new Coordinates(xMin,yMin), new Coordinates(xMin, yMax));  
 
             // draw the axes
-            g.drawLine(xAxis.getStart().getxMap(), xAxis.getStart().getyMap(), xAxis.getEnd().getxMap(), xAxis.getEnd().getyMap());
-            g.drawLine(yAxis.getStart().getxMap(), yAxis.getStart().getyMap(), yAxis.getEnd().getxMap(), yAxis.getEnd().getyMap());
+            g2d.drawLine(xAxis.getStart().getxMap(), xAxis.getStart().getyMap(), xAxis.getEnd().getxMap(), xAxis.getEnd().getyMap());
+            g2d.drawLine(yAxis.getStart().getxMap(), yAxis.getStart().getyMap(), yAxis.getEnd().getxMap(), yAxis.getEnd().getyMap());
+            
+            g2d.setFont(font);                    
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
             // x-axis labels
             for(int i = 0; i < numXLabels; i++){
                 Coordinates labelCoordinates = new Coordinates((int) (((float) i/(numXLabels-1))*(xMax-xMin)),0);
-                g.drawString(Integer.toString((int) labelCoordinates.getX()),labelCoordinates.getxMap(), labelCoordinates.getyMap()-baselineXadjust); 
+                g2d.drawString(Integer.toString((int) labelCoordinates.getX()),labelCoordinates.getxMap(), labelCoordinates.getyMap()-baselineXadjust); 
             } 
             // y-axis labels
             for(int i = 0; i < numYLabels; i++){
                 Coordinates labelCoordinates = new Coordinates(0, (int) (((float) i/(numYLabels-1))*(yMax-yMin)));
-                g.drawString(Integer.toString((int) labelCoordinates.getY()),labelCoordinates.getxMap()+baselineYadjust, labelCoordinates.getyMap()); 
+                g2d.drawString(Integer.toString((int) labelCoordinates.getY()),labelCoordinates.getxMap()+baselineYadjust, labelCoordinates.getyMap()); 
             }                       
         }
         
-        public void setAxes(int numXLabels, int numYLabels, int baselineXadjust, int baselineYadjust){
+        public void setAxes(int numXLabels, int numYLabels, int baselineXadjust, int baselineYadjust, Font font){
             this.numXLabels = numXLabels;
             this.numYLabels = numYLabels;
             this.baselineXadjust = baselineXadjust;
             this.baselineYadjust = baselineYadjust;    
+            this.font = font;
         }     
-
-        /**
-         * @param numXLabels the numXLabels to set
-         */
-        public void setNumXLabels(int numXLabels) {
-            this.numXLabels = numXLabels;
-        }
-
-        /**
-         * @param numYLabels the numYLabels to set
-         */
-        public void setNumYLabels(int numYLabels) {
-            this.numYLabels = numYLabels;
-        }
-
-        /**
-         * @param baselineXadjust the baselineXadjust to set
-         */
-        public void setBaselineXadjust(int baselineXadjust) {
-            this.baselineXadjust = baselineXadjust;
-        }
-
-        /**
-         * @param baselineYadjust the baselineYadjust to set
-         */
-        public void setBaselineYadjust(int baselineYadjust) {
-            this.baselineYadjust = baselineYadjust;
-        }
     }    
 
     public static class GridLines extends JPanel{
@@ -171,65 +176,69 @@ public class PlotComponents {
             this.numYLines = numYLines;
             this.col = col;
         }
-        
-        /**
-         * @param numXLines the numXLines to set
-         */
-        public void setNumXLines(int numXLines) {
-            this.numXLines = numXLines;
-        }
-
-        /**
-         * @param numYLines the numYLines to set
-         */
-        public void setNumYLines(int numXLines) {
-            this.numYLines = numYLines;
-        }
-
-        /**
-         * @param col the col to set
-         */
-        public void setCol(Color col) {
-            this.col = col;
-        }
 
     }
 
     public static class DataPoints extends JPanel{ // this will draw the data points
 
+        private String name;
         private Data data;
         private int pointSize;
         private Color pointColor;
         private String pointShape;
+        private boolean outline = false;
 
         DataPoints(){
         }
 
-        DataPoints(int pointSize, Color pointColor, String pointShape, double data[][]){   
+        DataPoints(int pointSize, Color pointColor, String pointShape, boolean outline, double data[][]){   
              this.pointSize = pointSize;
              this.pointShape = pointShape;
              this.pointColor = pointColor;
              this.data = new Data(data);
+             this.outline = outline;
         }
 
         @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
-            g.setColor(this.pointColor);
+            Graphics2D g2d = (Graphics2D)g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
             switch (pointShape) {
                 case "CIRCLE":
                     for (Coordinates point : data.getData()) g.fillOval(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
+                    if(outline){ 
+                        for (Coordinates point : data.getData()){
+                            Shape shape = new Ellipse2D.Double(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
+                            g2d.setColor(this.pointColor);
+                            g2d.fill(shape);     
+                            g2d.setColor(Color.BLACK);
+                            g2d.draw(shape);
+                        }
+                    }
                     break;
                 case "SQUARE":
                     for (Coordinates point : data.getData()) g.fillRect(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
+                    if(outline){ 
+                        for (Coordinates point : data.getData()){
+                            Shape shape = new Rectangle(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
+                            g2d.setColor(this.pointColor);
+                            g2d.fill(shape); 
+                            g2d.setColor(Color.BLACK);
+                            g2d.draw(shape);
+                        }
+                    }
                     break;
             }
         } 
 
-        public void setDataPoints(int pointSize, Color pointColor, String pointShape, double data[][]){   
+        public void setDataPoints(String name, int pointSize, Color pointColor, String pointShape, boolean outline, double data[][]){   
+            this.name = name;
             this.pointSize = pointSize;
             this.pointShape = pointShape;
             this.pointColor = pointColor;
+            this.outline = outline;
             this.data = new Data(data);
         }
         

@@ -12,23 +12,23 @@ public class Coordinates {
     private int xMap;
     private int yMap;
     
-    static int xMin = 0; // this is the min of the coordinate system - we should only need to define this once at the start
-    static int xMax = 0; // this is the max of the coordinate system - we should only need to define this once at the start
-    static int yMin = 0; // this is the min of the coordinate system - we should only need to define this once at the start
-    static int yMax = 0; // this is the max of the coordinate system - we should only need to define this once at the start
+    private static int xMin = 0; // this is the min of the coordinate system - we should only need to define this once at the start
+    private static int xMax = 0; // this is the max of the coordinate system - we should only need to define this once at the start
+    private static int yMin = 0; // this is the min of the coordinate system - we should only need to define this once at the start
+    private static int yMax = 0; // this is the max of the coordinate system - we should only need to define this once at the start
     
     static int frameWidth = 0;
     static int frameHeight = 0;
     static int padding = 0;
     
     Coordinates(int xMin, int xMax, int yMin, int yMax, int frameWidth, int frameHeight, int padding){ // this constructor is used to define the boundaries of the system and of the dimensions of the graphic space
-        this.xMin = xMin;
-        this.xMax = xMax;
-        this.yMin = yMin;
-        this.yMax = yMax;
-        this.frameWidth = frameWidth;
-        this.frameHeight = frameHeight;
-        this.padding = padding;
+        Coordinates.xMin = xMin;
+        Coordinates.xMax = xMax;
+        Coordinates.yMin = yMin;
+        Coordinates.yMax = yMax;
+        Coordinates.frameWidth = frameWidth;
+        Coordinates.frameHeight = frameHeight;
+        Coordinates.padding = padding;
     }
     
     Coordinates(){
@@ -51,7 +51,7 @@ public class Coordinates {
     }
  
     private static int mapY(double y){ 
-        double t = -1*( (( (double) y - yMin)/(yMax-yMin))*(frameHeight-2*padding)+padding    )+frameHeight;
+        double t = -1*( (( (double) y - yMin)/(yMax-yMin))*(frameHeight-2*padding)+padding)+frameHeight;
         return (int) t;
     }
     
@@ -97,6 +97,32 @@ public class Coordinates {
         return yMap;
     }
     
+    /**
+     * @return the xMin
+     */
+    public static int getxMin() {
+        return xMin;
+    }
 
+    /**
+     * @return the xMax
+     */
+    public static int getxMax() {
+        return xMax;
+    }
+
+    /**
+     * @return the yMin
+     */
+    public static int getyMin() {
+        return yMin;
+    }
+
+    /**
+     * @return the yMax
+     */
+    public static int getyMax() {
+        return yMax;
+    }
     
 }
