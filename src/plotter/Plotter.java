@@ -1,6 +1,7 @@
 
 package plotter;
 
+import java.awt.Color;
 import javax.swing.JFrame;
 
 /**
@@ -22,7 +23,12 @@ public class Plotter{
         }
         
         JFrame frame = new JFrame("Scatterplot");
+        
         ScatterPlot scatterPlot = new ScatterPlot(myData, 0, 500, 0, 500, WIDTH, HEIGHT, 200);
+        scatterPlot.setDataPoints(30, Color.RED,"CIRCLE", myData);
+        scatterPlot.setGridLines(11,11,new Color(200,200,200));
+        scatterPlot.setAxes(5,5,-30,-40);
+
         frame.setSize(WIDTH, HEIGHT);
         frame.add(scatterPlot);        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 

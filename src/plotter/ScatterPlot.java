@@ -21,8 +21,12 @@ public class ScatterPlot extends JPanel{
     private final int yMax;
     private double data[][];
     
-    ScatterPlot(double data[][], int xMin, int xMax, int yMin, int yMax, int width, int height, int padding){
-        
+    // These are the components of the scatterplot
+    private PlotComponents.DataPoints dataPoints;   
+    private PlotComponents.GridLines gridLines;
+    private PlotComponents.Axes axes;
+    
+    ScatterPlot(double data[][], int xMin, int xMax, int yMin, int yMax, int width, int height, int padding){      
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -31,40 +35,53 @@ public class ScatterPlot extends JPanel{
         this.height = height;
         this.pad = padding;
         this.data = data;
+        dataPoints = new PlotComponents.DataPoints();
+        gridLines = new PlotComponents.GridLines(xMin, xMax, yMin, yMax);         
+        axes = new PlotComponents.Axes(xMin, xMax, yMin, yMax);
+        new Coordinates(this.xMin, this.xMax, this.yMin, this.yMax, this.width, this.height, pad); // define the dimensions of the plotting space        
         makeScatterPlot();
     }            
      
     private void makeScatterPlot(){
         
-        new Coordinates(this.xMin, this.xMax, this.yMin, this.yMax, this.width, this.height, pad); // define the dimensions of the plotting space
-        
         JLayeredPane panel = new JLayeredPane();
-        
         panel.setPreferredSize(new Dimension(this.width,this.height));
         
-        // Create the datapoints
-        PlotComponents.DataPoints series1 = new PlotComponents.DataPoints(20, Color.PINK,"SQUARE", data);
-        series1.setBounds(0,0,this.width, this.height);
-        panel.add(series1, new Integer(0));
-        series1.setOpaque(false);
+        // Set the datapoints
+        dataPoints.setBounds(0,0,this.width, this.height);
+        dataPoints.setOpaque(false);
+        panel.add(dataPoints, new Integer(0));
         
-        // Create gridlines
-        PlotComponents.GridLines gridLines = new PlotComponents.GridLines(xMin, xMax, yMin, yMax);
-        gridLines.setNumXLines(11);
-        gridLines.setNumYLines(11);
+        // Set gridlines
         gridLines.setBounds(0,0,this.width, this.height);
         gridLines.setOpaque(false);
         panel.add(gridLines, new Integer(1)); // add out x and y axis with lables        
         
-        // Create the axes
-        PlotComponents.Axes axes = new PlotComponents.Axes(xMin, xMax, yMin, yMax);
-        axes.setNumXLabels(6);
-        axes.setNumYLabels(6);
-        axes.setBaselineXadjust(-30);
-        axes.setBaselineYadjust(-40);
+        // Set the axes
         axes.setBounds(0,0,this.width, this.height);
         axes.setOpaque(false);
         panel.add(axes, new Integer(2)); // add out x and y axis with lables
         add(panel);
+    }
+
+    /**
+     * @param series
+     */
+    public void setDataPoints(int pointSize, Color pointColor, String pointShape, double data[][]) {
+        this.dataPoints.setDataPoints(pointSize, pointColor, pointShape, data);             
+    }
+    
+    /**
+     * @param gridLines the gridLines to set
+     */
+    public void setGridLines(int numXLines, int numYLines, Color col) {
+        this.gridLines.setGridLines(numXLines, numYLines, col);
+    }
+
+    /**
+     * @param axes the axes to set
+     */
+    public void setAxes(int numXLabels, int numYLabels, int baselineXadjust, int baselineYadjust) {
+        this.axes.setAxes(numXLabels, numYLabels, baselineXadjust, baselineYadjust);
     }
 }

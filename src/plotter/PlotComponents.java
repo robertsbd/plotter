@@ -9,8 +9,47 @@ import javax.swing.JPanel;
  * @author benjamin
  */
 public class PlotComponents {
+        
+    public static class Title extends JPanel{
+        private String title;
+        private int fontSize;
+        
+        Title(){
+        }
+        
+        Title(String title){
+            this.title = title;
+            
+        }    
+    }
     
-    static class Axes extends JPanel{ // this will draw the axes providing the basic layout
+    public static class xAxisTitle extends JPanel{
+        private String title;
+        private int fontSize;
+        
+        xAxisTitle(){
+        }
+        
+        xAxisTitle(String title){
+            this.title = title;
+            
+        }    
+    }
+
+    public static class yAxisTitle extends JPanel{
+        private String title;
+        private int fontSize;
+        
+        yAxisTitle(){
+        }
+        
+        yAxisTitle(String title){
+            this.title = title;
+            
+        }    
+    }
+    
+    public static class Axes extends JPanel{ // this will draw the axes providing the basic layout
 
         private int numXLabels;
         private int numYLabels;
@@ -52,6 +91,13 @@ public class PlotComponents {
                 g.drawString(Integer.toString((int) labelCoordinates.getY()),labelCoordinates.getxMap()+baselineYadjust, labelCoordinates.getyMap()); 
             }                       
         }
+        
+        public void setAxes(int numXLabels, int numYLabels, int baselineXadjust, int baselineYadjust){
+            this.numXLabels = numXLabels;
+            this.numYLabels = numYLabels;
+            this.baselineXadjust = baselineXadjust;
+            this.baselineYadjust = baselineYadjust;    
+        }     
 
         /**
          * @param numXLabels the numXLabels to set
@@ -82,13 +128,13 @@ public class PlotComponents {
         }
     }    
 
-    static class GridLines extends JPanel{
+    public static class GridLines extends JPanel{
 
         // this panel should be behind the labels, but above the data.
 
-        private int numXLines = 11;
-        private int numYLines = 11;
-        private Color col = new Color(200, 200, 200);
+        private int numXLines;
+        private int numYLines;
+        private Color col;
         private int xMax;
         private int xMin;
         private int yMax;
@@ -120,6 +166,12 @@ public class PlotComponents {
             }
         }
 
+        public void setGridLines(int numXLines, int numYLines, Color col){
+            this.numXLines = numXLines;
+            this.numYLines = numYLines;
+            this.col = col;
+        }
+        
         /**
          * @param numXLines the numXLines to set
          */
@@ -130,7 +182,7 @@ public class PlotComponents {
         /**
          * @param numYLines the numYLines to set
          */
-        public void setNumYLines(int numYLines) {
+        public void setNumYLines(int numXLines) {
             this.numYLines = numYLines;
         }
 
@@ -141,41 +193,14 @@ public class PlotComponents {
             this.col = col;
         }
 
-        /**
-         * @param xMax the xMax to set
-         */
-        public void setxMax(int xMax) {
-            this.xMax = xMax;
-        }
-
-        /**
-         * @param xMin the xMin to set
-         */
-        public void setxMin(int xMin) {
-            this.xMin = xMin;
-        }
-
-        /**
-         * @param yMax the yMax to set
-         */
-        public void setyMax(int yMax) {
-            this.yMax = yMax;
-        }
-
-        /**
-         * @param yMin the yMin to set
-         */
-        public void setyMin(int yMin) {
-            this.yMin = yMin;
-        }
     }
 
-    static class DataPoints extends JPanel{ // this will draw the data points
+    public static class DataPoints extends JPanel{ // this will draw the data points
 
-        Data data;
-        int pointSize;
-        Color pointColor;
-        String pointShape;
+        private Data data;
+        private int pointSize;
+        private Color pointColor;
+        private String pointShape;
 
         DataPoints(){
         }
@@ -199,7 +224,15 @@ public class PlotComponents {
                     for (Coordinates point : data.getData()) g.fillRect(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
                     break;
             }
-        }         
+        } 
+
+        public void setDataPoints(int pointSize, Color pointColor, String pointShape, double data[][]){   
+            this.pointSize = pointSize;
+            this.pointShape = pointShape;
+            this.pointColor = pointColor;
+            this.data = new Data(data);
+        }
+        
     }
     
 }
