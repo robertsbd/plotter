@@ -1,6 +1,9 @@
 package plotter;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.ArrayList;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
@@ -21,12 +24,13 @@ public class ScatterPlot extends JPanel{
     private final int numDataSeries;
     
     // These are the components of the scatterplot
-    protected PlotComponents.DataPoints[] dataPoints;   
+    protected ArrayList<PlotComponents.DataPoints> dataPoints;   
     protected PlotComponents.GridLines gridLines;
     protected PlotComponents.Axes axes;
     protected PlotComponents.Title title;
     protected PlotComponents.Title xTitle;
     protected PlotComponents.Title yTitle;
+    protected PlotComponents.Legend legend;
     
     ScatterPlot(int xMin, int xMax, int yMin, int yMax, int width, int height, int padding, int numDataSeries){      
         this.xMin = xMin;
@@ -37,13 +41,14 @@ public class ScatterPlot extends JPanel{
         this.height = height;
         this.pad = padding;
         this.numDataSeries = numDataSeries;
- //       PlotComponents.DataPoints[] dataPoints = new PlotComponents.DataPoints[2];
-        dataPoints = new PlotComponents.DataPoints[1000]; // can handle up to 1000 dataseries
+
+        dataPoints = new ArrayList<>();
         gridLines = new PlotComponents.GridLines(xMin, xMax, yMin, yMax);         
         axes = new PlotComponents.Axes(xMin, xMax, yMin, yMax);
         title = new PlotComponents.Title();
         xTitle = new PlotComponents.Title();
         yTitle = new PlotComponents.Title();
+        legend = new PlotComponents.Legend();
         new Coordinates(this.xMin, this.xMax, this.yMin, this.yMax, this.width, this.height, pad); // define the dimensions of the plotting space        
         makeScatterPlot();
     }            
@@ -67,10 +72,10 @@ public class ScatterPlot extends JPanel{
 
         int i;
         for(i = 0; i < numDataSeries; i++){
-            dataPoints[i] = new PlotComponents.DataPoints();        
-            dataPoints[i].setBounds(0,0,this.width, this.height);
-            dataPoints[i].setOpaque(false);
-            panel.add(dataPoints[i], new Integer(2+i));
+            dataPoints.add(new PlotComponents.DataPoints());
+            dataPoints.get(i).setBounds(0,0,this.width, this.height);
+            dataPoints.get(i).setOpaque(false);
+            panel.add(dataPoints.get(i), new Integer(2+i));
         }
             
         // set the remaining aspects of the chart
@@ -86,6 +91,11 @@ public class ScatterPlot extends JPanel{
         yTitle.setBounds(0,0,this.width, this.height);
         yTitle.setOpaque(false);
         panel.add(yTitle, new Integer(5+i));
+        
+        Rectangle prefSize = legend.getBounds();
+        legend.setBounds(0,0,300,300);
+        legend.setOpaque(false);
+        panel.add(legend, new Integer(6+i));       
         
         add(panel);
     }

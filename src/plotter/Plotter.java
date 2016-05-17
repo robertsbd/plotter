@@ -2,7 +2,6 @@
 package plotter;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JFrame;
 
@@ -31,18 +30,18 @@ public class Plotter{
             myData2[i][1] = 20*i + Math.random()*100;
         }
 
-        
         JFrame frame = new JFrame("Scatterplot");
         
         ScatterPlot scatterPlot;
         scatterPlot = new ScatterPlot(0, 500, 0, 500, WIDTH, HEIGHT, 140, 2);
-        scatterPlot.dataPoints[0].setDataPoints("series1", 15, Color.PINK,"SQUARE", true, myData);
-        scatterPlot.dataPoints[1].setDataPoints("series2", 15, Color.CYAN,"CIRCLE", true, myData2);
+        scatterPlot.dataPoints.get(0).setDataPoints("series1", myData, true, 15, Color.PINK,"SQUARE", true, false);
+        scatterPlot.dataPoints.get(1).setDataPoints("series2", myData2, true, 15, Color.CYAN,"CIRCLE", true, false);
         scatterPlot.gridLines.setGridLines(11,11,new Color(200,200,200));
         scatterPlot.axes.setAxes(6,6,-30,-40, new Font("Arial", Font.PLAIN, 12));
         scatterPlot.title.setTitle("Relation between X and Y", "TOP", -40, (float) 0, new Font("Arial", Font.PLAIN, 25));
         scatterPlot.xTitle.setTitle("x-axis", "BOTTOM", -80, (float) .46, new Font("Arial", Font.PLAIN, 18));
         scatterPlot.yTitle.setTitle("yaxis", "LEFT", -110, (float) .5, new Font("Arial", Font.PLAIN, 18));
+        scatterPlot.legend.setLegend(scatterPlot.dataPoints,400,300, new Font("Arial", Font.PLAIN, 14));
         
         frame.setSize(WIDTH, HEIGHT);
         frame.add(scatterPlot);        

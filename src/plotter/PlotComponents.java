@@ -1,6 +1,7 @@
 package plotter;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -8,6 +9,8 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 /**
@@ -15,6 +18,75 @@ import javax.swing.JPanel;
  * @author benjamin
  */
 public class PlotComponents {
+    
+    public static class Legend extends JPanel{
+        private ArrayList<PlotComponents.DataPoints> series;
+        private int x;
+        private int y;
+        private Font font;
+        
+        Legend(){
+        }
+        
+        Legend(ArrayList<PlotComponents.DataPoints> series, int x, int y, Font font){
+            this.series = series;
+            this.x = x;
+            this.y = y;
+            this.font = font;
+        }
+
+        public void setLegend(ArrayList<PlotComponents.DataPoints> series, int x, int y, Font font){
+            this.series = series;
+            this.x = x;
+            this.y = y;
+            this.font = font;
+        }
+        
+        // need to scale x and y values os they make sense in terms of the rest of the coordinates scheme
+        // need some kind of out of bounds messages when the user tries to plot things that are out of the bounds of the image
+        
+        @Override
+        public void paintComponent(Graphics g){
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D)g.create();              
+            
+            Coordinates legendCoord = new Coordinates(x, y);
+
+            g2d.setFont(font);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+// would be better to draw all of this with a layout manager. But for the moment just paint it on with x and y.
+          
+            Shape shape = null;
+            for(int i=0; i < series.size(); i++){
+                if(series.get(i).drawMarker){
+                    switch(series.get(i).markerShape){
+                        case "CIRCLE":
+                            shape = new Ellipse2D.Double(legendCoord.getxMap(),legendCoord.getyMap()+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
+                            break;
+                        case "SQUARE":
+                            shape = new Rectangle(legendCoord.getxMap(),legendCoord.getyMap()+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                g2d.setColor(series.get(i).markerColor); // fill our marker
+                g2d.fill(shape);     
+                
+                if(series.get(i).drawMarkerOutline){              // outline our marker
+                    g2d.setColor(Color.BLACK);
+                    g2d.draw(shape);
+                }
+                
+                g2d.drawString(series.get(i).getName(),legendCoord.getxMap()+40,legendCoord.getyMap()+40*i); // write the name
+
+            }   
+
+            setSize(1000,1000);
+            setBorder(BorderFactory.createLineBorder(Color.black)); // add a border to the panel
+        }
+    }
      
     public static class Title extends JPanel{ // draws a title, can be used for writing axis titles also. Will also write 
         private String title;
@@ -183,20 +255,43 @@ public class PlotComponents {
 
         private String name;
         private Data data;
-        private int pointSize;
-        private Color pointColor;
-        private String pointShape;
-        private boolean outline = false;
+        private boolean drawMarker = false;
+        private int markerSize;
+        private Color markerColor;
+        private String markerShape;
+        private boolean drawMarkerOutline = false;
+        private boolean drawLine = false;
 
         DataPoints(){
         }
 
-        DataPoints(int pointSize, Color pointColor, String pointShape, boolean outline, double data[][]){   
-             this.pointSize = pointSize;
-             this.pointShape = pointShape;
-             this.pointColor = pointColor;
-             this.data = new Data(data);
-             this.outline = outline;
+        DataPoints(String name, double data[][], boolean drawMarker, int markerSize, Color markerColor, String markerShape, boolean drawMarkerOutline, boolean drawLine){   
+            this.name = name;
+            this.data = new Data(data);
+            this.drawMarker = drawMarker;
+            this.markerSize = markerSize;
+            this.markerColor = markerColor;
+            this.markerShape = markerShape;
+            this.drawMarkerOutline = drawMarkerOutline;          
+            this.drawLine = drawLine;      
+        }
+        
+        public void setDataPoints(String name, double data[][], boolean drawMarker, int markerSize, Color markerColor, String markerShape, boolean drawMarkerOutline, boolean drawLine){   
+            this.name = name;
+            this.data = new Data(data);          
+            this.drawMarker = drawMarker;
+            this.markerSize = markerSize;
+            this.markerColor = markerColor;
+            this.markerShape = markerShape;
+            this.drawMarkerOutline = drawMarkerOutline;           
+            this.drawLine = drawLine;     
+        }
+        /**
+         * @return the name
+         */
+        @Override
+        public String getName() {
+            return name;
         }
 
         @Override
@@ -205,13 +300,13 @@ public class PlotComponents {
             Graphics2D g2d = (Graphics2D)g.create();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            switch (pointShape) {
+            switch (markerShape) {
                 case "CIRCLE":
-                    for (Coordinates point : data.getData()) g.fillOval(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
-                    if(outline){ 
+                    for (Coordinates point : data.getData()) g.fillOval(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
+                    if(drawMarkerOutline){ 
                         for (Coordinates point : data.getData()){
-                            Shape shape = new Ellipse2D.Double(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
-                            g2d.setColor(this.pointColor);
+                            Shape shape = new Ellipse2D.Double(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
+                            g2d.setColor(this.markerColor);
                             g2d.fill(shape);     
                             g2d.setColor(Color.BLACK);
                             g2d.draw(shape);
@@ -219,28 +314,21 @@ public class PlotComponents {
                     }
                     break;
                 case "SQUARE":
-                    for (Coordinates point : data.getData()) g.fillRect(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
-                    if(outline){ 
+                    for (Coordinates point : data.getData()) g.fillRect(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
+                    if(drawMarkerOutline){ 
                         for (Coordinates point : data.getData()){
-                            Shape shape = new Rectangle(point.getxMap()-pointSize/2, point.getyMap()-pointSize/2, pointSize, pointSize);
-                            g2d.setColor(this.pointColor);
+                            Shape shape = new Rectangle(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
+                            g2d.setColor(this.markerColor);
                             g2d.fill(shape); 
                             g2d.setColor(Color.BLACK);
                             g2d.draw(shape);
                         }
                     }
                     break;
+                default:
+                    break;
             }
         } 
-
-        public void setDataPoints(String name, int pointSize, Color pointColor, String pointShape, boolean outline, double data[][]){   
-            this.name = name;
-            this.pointSize = pointSize;
-            this.pointShape = pointShape;
-            this.pointColor = pointColor;
-            this.outline = outline;
-            this.data = new Data(data);
-        }
         
     }
     
