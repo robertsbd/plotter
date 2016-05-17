@@ -9,7 +9,6 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import plotter.Shapes.*;
 
@@ -20,7 +19,7 @@ import plotter.Shapes.*;
 public class PlotComponents {
     
     public static class Legend extends JPanel{
-        private ArrayList<PlotComponents.DataSeries> series;
+        private ArrayList<DataSeries> series = new ArrayList<>();
         private int x;
         private int y;
         private Font font;
@@ -28,14 +27,14 @@ public class PlotComponents {
         Legend(){
         }
         
-        Legend(ArrayList<PlotComponents.DataSeries> series, int x, int y, Font font){
+        Legend(ArrayList<DataSeries> series, int x, int y, Font font){
             this.series = series;
             this.x = x;
             this.y = y;
             this.font = font;
         }
 
-        public void setLegend(ArrayList<PlotComponents.DataSeries> series, int x, int y, Font font){
+        public void setLegend(ArrayList<DataSeries> series, int x, int y, Font font){
             this.series = series;
             this.x = x;
             this.y = y;
@@ -48,28 +47,33 @@ public class PlotComponents {
         @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D)g.create();              
-            
-            Coordinates legendCoord = new Coordinates(x, y);
+            if(!series.isEmpty()) paintLegend(g);
+        }  
 
+        public void paintLegend(Graphics g){
+            // would be better to draw all of this with a layout manager. But for the moment just paint it on with x and y.
+            Shape shape = new Rectangle();
+
+            Graphics2D g2d = (Graphics2D)g.create();   
             g2d.setFont(font);
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-// would be better to draw all of this with a layout manager. But for the moment just paint it on with x and y.
-
-            // Background
-            g2d.setColor(Color.WHITE);
-            g2d.fillRect(0,0,100,40*(series.size()-1)+60);
             
-            Shape shape = null;
+            Coordinates legendLocation = new Coordinates(x,y);
+            
+//            shape = new Rectangle(legendLocation.getxMap(),legendLocation.getyMap(),100,40*(series.size()-1)+60);
+//            g2d.setColor(Color.WHITE);
+//            g2d.fill(shape);
+//            g2d.setColor(Color.BLACK);
+//            g2d.draw(shape);
+
             for(int i=0; i < series.size(); i++){
                 if(series.get(i).drawMarker){
                     switch(series.get(i).markerShape){
                         case "CIRCLE":
-                            shape = new Ellipse2D.Double(10,40+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
+                            shape = new Ellipse2D.Double(legendLocation.getxMap()+10,legendLocation.getyMap()+40+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
                             break;
                         case "SQUARE":
-                            shape = new Rectangle(10,40+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
+                            shape = new Rectangle(legendLocation.getxMap()+10,legendLocation.getyMap()+40+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
                             break;
                         default:
                             break;
@@ -78,23 +82,16 @@ public class PlotComponents {
                 g2d.setColor(series.get(i).markerColor); // fill our marker
                 g2d.fill(shape);     
                 
-                if(series.get(i).drawMarkerOutline){              // outline our marker
+                if(series.get(i).drawMarkerOutline){     // outline our marker
                     g2d.setColor(Color.BLACK);
                     g2d.draw(shape);
                 }
                 
-                g2d.drawString(series.get(i).getName(),40,40+40*i); // write the name
-
+                g2d.drawString(series.get(i).getName(),legendLocation.getxMap()+40,legendLocation.getyMap()+40+40*i); // write the name
             }   
-
-            Coordinates legendLocation = new Coordinates(x,y);
-           
-            setBounds(legendLocation.getxMap(),legendLocation.getyMap(),100,40*(series.size()-1)+60);
-            setBorder(BorderFactory.createLineBorder(Color.black)); // add a border to the panel
-            setOpaque(false);
-            
-        }
+        }     
     }
+
      
     public static class Title extends JPanel{ // draws a title, can be used for writing axis titles also. Will also write 
         private String title;
@@ -121,7 +118,6 @@ public class PlotComponents {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D)g.create();
             Coordinates titleCoord = new Coordinates();
-  
             g2d.setFont(font);
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             

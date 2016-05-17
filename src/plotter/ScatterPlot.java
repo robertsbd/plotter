@@ -7,6 +7,8 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import plotter.PlotComponents.*;
 
+// Note the scatterplot can also be used for line graphs so we don't need these two types.
+
 /**
  *
  * @author benjamin
@@ -76,21 +78,13 @@ public class ScatterPlot extends JPanel{
         panel.add(axes, new Integer(1)); // add out x and y axis with lables
         
         // Plot the datapoints
-        
         int i = 0;
-        if (!data.isEmpty()){
-            for(i = 0; i < data.size(); i++){
+        for(i = 0; i < data.size(); i++){
                 data.get(i).setBounds(0,0,this.width, this.height);
                 data.get(i).setOpaque(false);
                 panel.add(data.get(i), new Integer(2+i));
-            }
         }            
-        // set the remaining aspects of the chart
-        
-//        int i = 0;
-//        data.get(0).setBounds(0,0,this.width, this.height);
-//        data.get(i).setOpaque(false);
-//        panel.add(data.get(i), new Integer(2+i));        
+        // set the remaining aspects of the chart     
 
         title.setBounds(0,0,this.width, this.height);
         title.setOpaque(false);
@@ -104,9 +98,9 @@ public class ScatterPlot extends JPanel{
         yTitle.setOpaque(false);
         panel.add(yTitle, new Integer(5+i));
         
-        legend.setBounds(1,1,1,1); // I don't know why I have to put this here as it seems to be controlled from with legend class
+        legend.setBounds(0,0,this.width,this.height); 
+        legend.setOpaque(false);
         panel.add(legend, new Integer(6+i));       
-        
         add(panel);
     }
 }
