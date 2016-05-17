@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import plotcomponents.*;
-import charts.*;
 
 /**
  *
