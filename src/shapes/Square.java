@@ -8,16 +8,16 @@ import java.awt.Graphics;
  */
 public class Square extends Shape{
     private double width;
-    private double x;
-    private double y;
 
     public Square(){
+        super.name = "SQUARE";
     }
     
     public Square(double x, double y, double width){
         this.x = x;
         this.y = y;
         this.width = width;
+        this.name = "SQUARE";        
     }
 
     @Override
@@ -28,6 +28,10 @@ public class Square extends Shape{
     @Override
     public void fill(Graphics g){
         g.fillRect((int) x, (int) y, (int) width,  (int) width);        
+    }
+    
+    public String getName(){
+        return this.name;
     }
     
 }

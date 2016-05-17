@@ -7,15 +7,17 @@ import javafx.scene.shape.Shape;
  *
  * @author benjamin
  */
-public class Triangle extends Shape// note x,y will be the bottom left corner of the triangle
-    {
-        private int x;
-        private int y;
-        private int height;
-        private int width;
+public class Triangle extends Shape{// note x,y will be the bottom left corner of the triangle
+    
+        private double height;
+        private double width;
         private Polygon triangle;
+
+        public Triangle() {
+            this.name = "TRIANGLE";
+        }
         
-        public Triangle(int x, int y, int width, int height)
+        public Triangle(double x, double y, double width, double height)
         {
             int[] xVals = new int[3];
             int[] yVals = new int[3];
@@ -34,9 +36,7 @@ public class Triangle extends Shape// note x,y will be the bottom left corner of
             triangle = new Polygon(xVals, yVals, 3);
         }
 
-        public Triangle() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
+
 
 //        public void draw(Graphics g){     
 //            g.drawPolygon(triangle);
@@ -45,9 +45,4 @@ public class Triangle extends Shape// note x,y will be the bottom left corner of
 //        public void fill(Graphics g){
 //            g.fillPolygon(triangle);
 //        }
-
-        @Override
-        public com.sun.javafx.geom.Shape impl_configShape() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
     }
