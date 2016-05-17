@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import plotter.PlotComponents.*;
 
 /**
  *
@@ -37,10 +38,10 @@ public class Plotter{
         
         // we need to add the data to the scatterplot when we create it otherwise it doesn't know if there is data or not to plot.
         
-        ArrayList<PlotComponents.DataSeries> allData;
+        ArrayList<DataSeries> allData;
         allData = new ArrayList<>();
-        allData.add(new PlotComponents.DataSeries(myData));
-        allData.add(new PlotComponents.DataSeries(myData2));       
+        allData.add(new DataSeries(myData));
+        allData.add(new DataSeries(myData2));       
         
         scatterPlot = new ScatterPlot(allData, 0, 400, 0, 350, WIDTH, HEIGHT, 140);
         scatterPlot.data.get(0).setDataPoints("series1", myData, true, 10, Color.PINK,"SQUARE", true, true, Color.PINK);

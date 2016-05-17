@@ -11,6 +11,7 @@ import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import plotter.Shapes.*;
 
 /**
  *

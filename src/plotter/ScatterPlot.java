@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import plotter.PlotComponents.*;
 
 /**
  *
@@ -22,17 +23,17 @@ public class ScatterPlot extends JPanel{
     private final int yMax;
     
     // These are the components of the scatterplot
-    protected ArrayList<PlotComponents.DataSeries> data;   
-    protected PlotComponents.GridLines gridLines;
-    protected PlotComponents.Axes axes;
-    protected PlotComponents.Title title;
-    protected PlotComponents.Title xTitle;
-    protected PlotComponents.Title yTitle;
-    protected PlotComponents.Legend legend;
+    protected ArrayList<DataSeries> data;   
+    protected GridLines gridLines;
+    protected Axes axes;
+    protected Title title;
+    protected Title xTitle;
+    protected Title yTitle;
+    protected Legend legend;
 
     private JPanel background;
     
-    ScatterPlot(ArrayList<PlotComponents.DataSeries> data, int xMin, int xMax, int yMin, int yMax, int width, int height, int padding){      
+    ScatterPlot(ArrayList<DataSeries> data, int xMin, int xMax, int yMin, int yMax, int width, int height, int padding){      
         this.data = data;
         this.xMin = xMin;
         this.xMax = xMax;
@@ -42,12 +43,12 @@ public class ScatterPlot extends JPanel{
         this.height = height;
         this.pad = padding;
 
-        gridLines = new PlotComponents.GridLines(xMin, xMax, yMin, yMax);         
-        axes = new PlotComponents.Axes(xMin, xMax, yMin, yMax);
-        title = new PlotComponents.Title();
-        xTitle = new PlotComponents.Title();
-        yTitle = new PlotComponents.Title();
-        legend = new PlotComponents.Legend();
+        gridLines = new GridLines(xMin, xMax, yMin, yMax);         
+        axes = new Axes(xMin, xMax, yMin, yMax);
+        title = new Title();
+        xTitle = new Title();
+        yTitle = new Title();
+        legend = new Legend();
         new Coordinates(this.xMin, this.xMax, this.yMin, this.yMax, this.width, this.height, pad); // define the dimensions of the plotting space        
         makeScatterPlot();
     }            
