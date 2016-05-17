@@ -65,7 +65,6 @@ public class ScatterPlot extends JPanel{
         background = new JPanel();
         background.setBounds(0,0,this.width, this.height);
         background.setBackground(Color.WHITE);
-        
         panel.add(background, new Integer(-1));
         
         // Set gridlines
