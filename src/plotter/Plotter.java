@@ -41,7 +41,7 @@ public class Plotter{
         scatterPlot.title.setTitle("Relation between X and Y", "TOP", -40, (float) 0, new Font("Arial", Font.PLAIN, 25));
         scatterPlot.xTitle.setTitle("x-axis", "BOTTOM", -80, (float) .46, new Font("Arial", Font.PLAIN, 18));
         scatterPlot.yTitle.setTitle("yaxis", "LEFT", -110, (float) .5, new Font("Arial", Font.PLAIN, 18));
-        scatterPlot.legend.setLegend(scatterPlot.dataPoints,400,300, new Font("Arial", Font.PLAIN, 14));
+        scatterPlot.legend.setLegend(scatterPlot.dataPoints,510,500, new Font("Arial", Font.PLAIN, 14));
         
         frame.setSize(WIDTH, HEIGHT);
         frame.add(scatterPlot);        

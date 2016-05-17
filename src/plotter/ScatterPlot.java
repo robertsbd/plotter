@@ -1,5 +1,6 @@
 package plotter;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -31,6 +32,7 @@ public class ScatterPlot extends JPanel{
     protected PlotComponents.Title xTitle;
     protected PlotComponents.Title yTitle;
     protected PlotComponents.Legend legend;
+    private JPanel background;
     
     ScatterPlot(int xMin, int xMax, int yMin, int yMax, int width, int height, int padding, int numDataSeries){      
         this.xMin = xMin;
@@ -57,6 +59,13 @@ public class ScatterPlot extends JPanel{
         
         JLayeredPane panel = new JLayeredPane();
         panel.setPreferredSize(new Dimension(this.width,this.height));
+        
+        // first a background
+        background = new JPanel();
+        background.setBounds(0,0,this.width, this.height);
+        background.setBackground(Color.WHITE);
+        
+        panel.add(background, new Integer(-1));
         
         // Set gridlines
         gridLines.setBounds(0,0,this.width, this.height);
@@ -92,9 +101,7 @@ public class ScatterPlot extends JPanel{
         yTitle.setOpaque(false);
         panel.add(yTitle, new Integer(5+i));
         
-        Rectangle prefSize = legend.getBounds();
-        legend.setBounds(0,0,300,300);
-        legend.setOpaque(false);
+        legend.setBounds(1,1,1,1); // I don't know why I have to put this here as it seems to be controlled from with legend class
         panel.add(legend, new Integer(6+i));       
         
         add(panel);

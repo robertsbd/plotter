@@ -56,16 +56,20 @@ public class PlotComponents {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 // would be better to draw all of this with a layout manager. But for the moment just paint it on with x and y.
-          
+
+            // Background
+            g2d.setColor(Color.WHITE);
+            g2d.fillRect(0,0,100,40*(series.size()-1)+60);
+            
             Shape shape = null;
             for(int i=0; i < series.size(); i++){
                 if(series.get(i).drawMarker){
                     switch(series.get(i).markerShape){
                         case "CIRCLE":
-                            shape = new Ellipse2D.Double(legendCoord.getxMap(),legendCoord.getyMap()+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
+                            shape = new Ellipse2D.Double(10,40+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
                             break;
                         case "SQUARE":
-                            shape = new Rectangle(legendCoord.getxMap(),legendCoord.getyMap()+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
+                            shape = new Rectangle(10,40+40*i-series.get(i).markerSize, series.get(i).markerSize,series.get(i).markerSize);
                             break;
                         default:
                             break;
@@ -79,12 +83,16 @@ public class PlotComponents {
                     g2d.draw(shape);
                 }
                 
-                g2d.drawString(series.get(i).getName(),legendCoord.getxMap()+40,legendCoord.getyMap()+40*i); // write the name
+                g2d.drawString(series.get(i).getName(),40,40+40*i); // write the name
 
             }   
 
-            setSize(1000,1000);
+            Coordinates legendLocation = new Coordinates(x,y);
+           
+            setBounds(legendLocation.getxMap(),legendLocation.getyMap(),100,40*(series.size()-1)+60);
             setBorder(BorderFactory.createLineBorder(Color.black)); // add a border to the panel
+            setOpaque(false);
+            
         }
     }
      
