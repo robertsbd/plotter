@@ -1,7 +1,6 @@
 package plotter;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,7 +19,7 @@ import javax.swing.JPanel;
 public class PlotComponents {
     
     public static class Legend extends JPanel{
-        private ArrayList<PlotComponents.DataPoints> series;
+        private ArrayList<PlotComponents.DataSeries> series;
         private int x;
         private int y;
         private Font font;
@@ -28,14 +27,14 @@ public class PlotComponents {
         Legend(){
         }
         
-        Legend(ArrayList<PlotComponents.DataPoints> series, int x, int y, Font font){
+        Legend(ArrayList<PlotComponents.DataSeries> series, int x, int y, Font font){
             this.series = series;
             this.x = x;
             this.y = y;
             this.font = font;
         }
 
-        public void setLegend(ArrayList<PlotComponents.DataPoints> series, int x, int y, Font font){
+        public void setLegend(ArrayList<PlotComponents.DataSeries> series, int x, int y, Font font){
             this.series = series;
             this.x = x;
             this.y = y;
@@ -259,40 +258,47 @@ public class PlotComponents {
 
     }
 
-    public static class DataPoints extends JPanel{ // this will draw the data points
+    public static class DataSeries extends JPanel{ // this contains the information about the dataSeries
 
         private String name;
-        private Data data;
+        private xyData data;
         private boolean drawMarker = false;
         private int markerSize;
         private Color markerColor;
         private String markerShape;
         private boolean drawMarkerOutline = false;
         private boolean drawLine = false;
+        private Color lineColor;
 
-        DataPoints(){
+        DataSeries(){
+        }
+        
+        DataSeries(double data[][]){
+            this.data = new xyData(data);
         }
 
-        DataPoints(String name, double data[][], boolean drawMarker, int markerSize, Color markerColor, String markerShape, boolean drawMarkerOutline, boolean drawLine){   
+        DataSeries(String name, double data[][], boolean drawMarker, int markerSize, Color markerColor, String markerShape, boolean drawMarkerOutline, boolean drawLine, Color lineColor){   
             this.name = name;
-            this.data = new Data(data);
+            this.data = new xyData(data);
             this.drawMarker = drawMarker;
             this.markerSize = markerSize;
             this.markerColor = markerColor;
             this.markerShape = markerShape;
             this.drawMarkerOutline = drawMarkerOutline;          
-            this.drawLine = drawLine;      
+            this.drawLine = drawLine;
+            this.lineColor = lineColor;
         }
         
-        public void setDataPoints(String name, double data[][], boolean drawMarker, int markerSize, Color markerColor, String markerShape, boolean drawMarkerOutline, boolean drawLine){   
+        public void setDataPoints(String name, double data[][], boolean drawMarker, int markerSize, Color markerColor, String markerShape, boolean drawMarkerOutline, boolean drawLine, Color lineColor){   
             this.name = name;
-            this.data = new Data(data);          
+            this.data = new xyData(data);          
             this.drawMarker = drawMarker;
             this.markerSize = markerSize;
             this.markerColor = markerColor;
             this.markerShape = markerShape;
             this.drawMarkerOutline = drawMarkerOutline;           
-            this.drawLine = drawLine;     
+            this.drawLine = drawLine;  
+            this.lineColor = lineColor;
         }
         /**
          * @return the name
@@ -305,38 +311,50 @@ public class PlotComponents {
         @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
+            if(drawLine) addLines(g);
+            if(drawMarker) addMarkers(g);
+        }
+        
+        public void addMarkers(Graphics g){
             Graphics2D g2d = (Graphics2D)g.create();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            switch (markerShape) {
-                case "CIRCLE":
-                    for (Coordinates point : data.getData()) g.fillOval(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
-                    if(drawMarkerOutline){ 
-                        for (Coordinates point : data.getData()){
-                            Shape shape = new Ellipse2D.Double(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
-                            g2d.setColor(this.markerColor);
-                            g2d.fill(shape);     
-                            g2d.setColor(Color.BLACK);
-                            g2d.draw(shape);
-                        }
-                    }
-                    break;
-                case "SQUARE":
-                    for (Coordinates point : data.getData()) g.fillRect(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
-                    if(drawMarkerOutline){ 
-                        for (Coordinates point : data.getData()){
-                            Shape shape = new Rectangle(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
-                            g2d.setColor(this.markerColor);
-                            g2d.fill(shape); 
-                            g2d.setColor(Color.BLACK);
-                            g2d.draw(shape);
-                        }
-                    }
-                    break;
-                default:
-                    break;
+            // need to add some more shapes
+
+            Shape shape;
+            
+            for(Coordinates point : data.getData()){
+                switch (markerShape) {
+                    case "CIRCLE":
+                        shape = new Ellipse2D.Double(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
+                         break;
+                    case "SQUARE":
+                        shape = new Rectangle(point.getxMap()-markerSize/2, point.getyMap()-markerSize/2, markerSize, markerSize);
+                        break;
+                    default:
+                        shape = null;
+                        break;
+                }
+                g2d.setColor(markerColor);
+                g2d.fill(shape); 
+                if( drawMarkerOutline){
+                    g2d.setColor(Color.BLACK);
+                    g2d.draw(shape);
+                }
             }
-        } 
+        }
+        
+        public void addLines(Graphics g){
+            Graphics2D g2d = (Graphics2D)g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setColor(lineColor);
+            
+            for(int i = 1; i < data.getData().length; i++){
+                StraightLine plotLine = new StraightLine(data.getDataPoint(i-1), data.getDataPoint(i));
+                g2d.drawLine(plotLine.getStart().getxMap(), plotLine.getStart().getyMap(), plotLine.getEnd().getxMap(), plotLine.getEnd().getyMap());                
+            }
+            
+        }
         
     }
     

@@ -7,11 +7,11 @@ package plotter;
  *
  * @author benjamin
  */
-public class Data {
+public class xyData {
     
     private Coordinates[] data;
     
-    Data(double dataIN[][]){
+    xyData(double dataIN[][]){
         this.data = new Coordinates[dataIN.length];    
         for(int i = 0; i < dataIN.length; i++){
             this.data[i] = new Coordinates(dataIN[i][0], dataIN[i][1]);

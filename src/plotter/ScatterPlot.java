@@ -2,8 +2,6 @@ package plotter;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Shape;
 import java.util.ArrayList;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -22,19 +20,20 @@ public class ScatterPlot extends JPanel{
     private final int xMax;
     private final int yMin;
     private final int yMax;
-    private final int numDataSeries;
     
     // These are the components of the scatterplot
-    protected ArrayList<PlotComponents.DataPoints> dataPoints;   
+    protected ArrayList<PlotComponents.DataSeries> data;   
     protected PlotComponents.GridLines gridLines;
     protected PlotComponents.Axes axes;
     protected PlotComponents.Title title;
     protected PlotComponents.Title xTitle;
     protected PlotComponents.Title yTitle;
     protected PlotComponents.Legend legend;
+
     private JPanel background;
     
-    ScatterPlot(int xMin, int xMax, int yMin, int yMax, int width, int height, int padding, int numDataSeries){      
+    ScatterPlot(ArrayList<PlotComponents.DataSeries> data, int xMin, int xMax, int yMin, int yMax, int width, int height, int padding){      
+        this.data = data;
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -42,9 +41,7 @@ public class ScatterPlot extends JPanel{
         this.width = width;
         this.height = height;
         this.pad = padding;
-        this.numDataSeries = numDataSeries;
 
-        dataPoints = new ArrayList<>();
         gridLines = new PlotComponents.GridLines(xMin, xMax, yMin, yMax);         
         axes = new PlotComponents.Axes(xMin, xMax, yMin, yMax);
         title = new PlotComponents.Title();
@@ -77,18 +74,23 @@ public class ScatterPlot extends JPanel{
         axes.setOpaque(false);
         panel.add(axes, new Integer(1)); // add out x and y axis with lables
         
-        // Set the datapoints
-
-        int i;
-        for(i = 0; i < numDataSeries; i++){
-            dataPoints.add(new PlotComponents.DataPoints());
-            dataPoints.get(i).setBounds(0,0,this.width, this.height);
-            dataPoints.get(i).setOpaque(false);
-            panel.add(dataPoints.get(i), new Integer(2+i));
-        }
-            
+        // Plot the datapoints
+        
+        int i = 0;
+        if (!data.isEmpty()){
+            for(i = 0; i < data.size(); i++){
+                data.get(i).setBounds(0,0,this.width, this.height);
+                data.get(i).setOpaque(false);
+                panel.add(data.get(i), new Integer(2+i));
+            }
+        }            
         // set the remaining aspects of the chart
         
+//        int i = 0;
+//        data.get(0).setBounds(0,0,this.width, this.height);
+//        data.get(i).setOpaque(false);
+//        panel.add(data.get(i), new Integer(2+i));        
+
         title.setBounds(0,0,this.width, this.height);
         title.setOpaque(false);
         panel.add(title, new Integer(3+i));
