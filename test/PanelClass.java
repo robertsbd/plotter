@@ -10,18 +10,18 @@ import shapes.*;
  */
 public class PanelClass extends JPanel{
     
-    public Shape mySquare;
+    public Shape myTriangle;
     
     public PanelClass(){
-        mySquare = new Square(100,100,100);   
+        myTriangle = new Triangle(100,100,100,100);   
     }
 
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        mySquare.draw(g);
-        mySquare.fill(g);
-        System.out.println(mySquare.getName());
+        myTriangle.draw(g);
+        myTriangle.fill(g);
+        System.out.println(myTriangle.getName());
     } 
     
 }
