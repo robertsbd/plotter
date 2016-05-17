@@ -1,4 +1,4 @@
-package plotter;
+package data;
 
 /**
  *
@@ -21,7 +21,7 @@ public class Coordinates {
     static int frameHeight = 0;
     static int padding = 0;
     
-    Coordinates(int xMin, int xMax, int yMin, int yMax, int frameWidth, int frameHeight, int padding){ // this constructor is used to define the boundaries of the system and of the dimensions of the graphic space
+    public Coordinates(int xMin, int xMax, int yMin, int yMax, int frameWidth, int frameHeight, int padding){ // this constructor is used to define the boundaries of the system and of the dimensions of the graphic space
         Coordinates.xMin = xMin;
         Coordinates.xMax = xMax;
         Coordinates.yMin = yMin;
@@ -31,14 +31,14 @@ public class Coordinates {
         Coordinates.padding = padding;
     }
     
-    Coordinates(){
+    public Coordinates(){
         this.x = 0;
         this.y = 0;
         this.xMap = mapX(this.x);
         this.yMap = mapY(this.y);
     }
     
-    Coordinates(double x, double y){
+    public Coordinates(double x, double y){
         this.x = x;
         this.y = y;
         this.xMap = mapX(this.x);

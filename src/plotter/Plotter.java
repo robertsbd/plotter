@@ -4,10 +4,8 @@ package plotter;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
-import plotter.PlotComponents.*;
+import plotcomponents.*;
 
 /**
  *
@@ -24,18 +22,18 @@ public class Plotter{
         double[][] myData2;
                 
         myData = new double[20][2];
-        
+
         for(int i = 0; i < 20; i++){
             myData[i][0] = 20*i;
-            myData[i][1] = Math.random()*10 + 100;
+            myData[i][1] = Math.random()*10+100;
         }
 
         myData2 = new double[20][2];
-        
+
         for(int i = 0; i < 20; i++){
             myData2[i][0] = 20*i;
-            myData2[i][1] = Math.random()*10+300*i;
-        }
+            myData2[i][1] = Math.random()*20-8*i+200;
+        }  
 
         JFrame frame = new JFrame("Scatterplot");
           
@@ -59,32 +57,32 @@ public class Plotter{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         frame.setVisible(true);
         
-        while(true){
-            myData = new double[20][2];
-
-            for(int i = 0; i < 20; i++){
-                myData[i][0] = 20*i;
-                myData[i][1] = Math.random()*10+100;
-            }
-            
-            myData2 = new double[20][2];
- 
-            for(int i = 0; i < 20; i++){
-                myData2[i][0] = 20*i;
-                myData2[i][1] = Math.random()*20-8*i+200;
-            }  
- 
-
-            scatterPlot.data.get(0).setDataPoints("Control", myData, true, 10, Color.PINK,"SQUARE", true, true, Color.PINK);
-            scatterPlot.data.get(1).setDataPoints("Phobic", myData2, true, 10, Color.CYAN,"CIRCLE", true, true, Color.BLUE);            
-
-            frame.repaint();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Plotter.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        while(true){
+//            myData = new double[20][2];
+//
+//            for(int i = 0; i < 20; i++){
+//                myData[i][0] = 20*i;
+//                myData[i][1] = Math.random()*10+100;
+//            }
+//            
+//            myData2 = new double[20][2];
+// 
+//            for(int i = 0; i < 20; i++){
+//                myData2[i][0] = 20*i;
+//                myData2[i][1] = Math.random()*20-8*i+200;
+//            }  
+// 
+//
+//            scatterPlot.data.get(0).setDataPoints("Control", myData, true, 10, Color.PINK,"SQUARE", true, true, Color.PINK);
+//            scatterPlot.data.get(1).setDataPoints("Phobic", myData2, true, 10, Color.CYAN,"CIRCLE", true, true, Color.BLUE);            
+//
+//            frame.repaint();
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(Plotter.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
 
 }

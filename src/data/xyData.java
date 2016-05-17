@@ -1,4 +1,6 @@
-package plotter;
+package data;
+
+import data.Coordinates;
 
 
 // an array of Coordinates that contains our data.
@@ -11,7 +13,7 @@ public class xyData {
     
     private Coordinates[] data;
     
-    xyData(double dataIN[][]){
+    public xyData(double dataIN[][]){
         this.data = new Coordinates[dataIN.length];    
         for(int i = 0; i < dataIN.length; i++){
             this.data[i] = new Coordinates(dataIN[i][0], dataIN[i][1]);

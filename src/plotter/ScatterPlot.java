@@ -1,11 +1,12 @@
 package plotter;
 
+import data.Coordinates;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import plotter.PlotComponents.*;
+import plotcomponents.*;
 
 // Note the scatterplot can also be used for line graphs so we don't need these two types.
 
