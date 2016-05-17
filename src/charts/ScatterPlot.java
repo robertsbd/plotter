@@ -1,4 +1,4 @@
-package plotter;
+package charts;
 
 import data.Coordinates;
 import java.awt.Color;
@@ -26,17 +26,17 @@ public class ScatterPlot extends JPanel{
     private final int yMax;
     
     // These are the components of the scatterplot
-    protected ArrayList<DataSeries> data;   
-    protected GridLines gridLines;
-    protected Axes axes;
-    protected Title title;
-    protected Title xTitle;
-    protected Title yTitle;
-    protected Legend legend;
+    private final ArrayList<DataSeries> data;   
+    private final GridLines gridLines;
+    private final Axes axes;
+    private final Title title;
+    private final Title xTitle;
+    private final Title yTitle;
+    private final Legend legend;
 
     private JPanel background;
     
-    ScatterPlot(ArrayList<DataSeries> data, int xMin, int xMax, int yMin, int yMax, int width, int height, int padding){      
+    public ScatterPlot(ArrayList<DataSeries> data, int xMin, int xMax, int yMin, int yMax, int width, int height, int padding){      
         this.data = data;
         this.xMin = xMin;
         this.xMax = xMax;
@@ -102,5 +102,54 @@ public class ScatterPlot extends JPanel{
         legend.setOpaque(false);
         panel.add(legend, new Integer(6+i));       
         add(panel);
+    }
+
+    /**
+     * @return the data
+     */
+    public ArrayList<DataSeries> getData() {
+        return data;
+    }
+
+    /**
+     * @return the gridLines
+     */
+    public GridLines getGridLines() {
+        return gridLines;
+    }
+
+    /**
+     * @return the axes
+     */
+    public Axes getAxes() {
+        return axes;
+    }
+
+    /**
+     * @return the title
+     */
+    public Title getTitle() {
+        return title;
+    }
+
+    /**
+     * @return the xTitle
+     */
+    public Title getxTitle() {
+        return xTitle;
+    }
+
+    /**
+     * @return the yTitle
+     */
+    public Title getyTitle() {
+        return yTitle;
+    }
+
+    /**
+     * @return the legend
+     */
+    public Legend getLegend() {
+        return legend;
     }
 }
