@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import markers.*;
 import plotcomponents.*;
 
 /**
@@ -14,8 +15,8 @@ import plotcomponents.*;
  */
 public class Plotter{
 
-    static final int WIDTH = 800;
-    static final int HEIGHT = 800;
+    static final int WIDTH = 1000;
+    static final int HEIGHT = 1000;
     
     public static void main(String[] args) {
         
@@ -42,10 +43,10 @@ public class Plotter{
         allData = new ArrayList<>();
         allData.add(new DataSeries(myData));
         allData.add(new DataSeries(myData2));       
-        
+                
         ScatterPlot scatterPlot = new ScatterPlot(allData, 0, 400, 0, 350, WIDTH, HEIGHT, 120);
-        scatterPlot.getData().get(0).setDataPoints("Control", myData, true, 10, Color.PINK,"SQUARE", true, true, Color.PINK);
-        scatterPlot.getData().get(1).setDataPoints("Phobic", myData2, true, 10, Color.CYAN,"CIRCLE", true, true, Color.BLUE);
+        scatterPlot.getData().get(0).setDataPoints("Control", myData, new Triangle(10, Color.PINK, true), true, Color.RED);
+        scatterPlot.getData().get(1).setDataPoints("Phobic", myData2, new Square(10, new Color(102,204,255), true), true, Color.BLUE);
         scatterPlot.getGridLines().setGridLines(11,15,new Color(200,200,200));
         scatterPlot.getAxes().setAxes(6,8,-30,-40, new Font("Arial", Font.PLAIN, 12));
         scatterPlot.getTitle().setTitle("Reported anxiety as a function of dosage", "TOP", -40, (float) 0, new Font("Arial", Font.PLAIN, 20));

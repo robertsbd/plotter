@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import data.Coordinates;
-import shapes.StraightLine;
+import graphics.StraightLine;
 
 /**
  *

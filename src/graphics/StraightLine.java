@@ -1,4 +1,4 @@
-package shapes;
+package graphics;
 
 import data.Coordinates;
 

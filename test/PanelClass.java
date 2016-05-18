@@ -1,7 +1,8 @@
 
+import markers.InvertedTriangle;
+import markers.Marker;
 import java.awt.Graphics;
 import javax.swing.JPanel;
-import shapes.*;
 
 
 /**
@@ -10,10 +11,10 @@ import shapes.*;
  */
 public class PanelClass extends JPanel{
     
-    public Shape myTriangle;
+    public Marker myTriangle;
     
     public PanelClass(){
-        myTriangle = new Triangle(100,100,100,100);   
+        myTriangle = new InvertedTriangle(100,100,100,100);   
     }
 
     @Override
